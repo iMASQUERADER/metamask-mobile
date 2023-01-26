@@ -5,6 +5,7 @@ import { ethErrors } from 'eth-json-rpc-errors';
 import RPCMethods from './index.js';
 import { RPC } from '../../constants/network';
 import { NetworksChainId, NetworkType } from '@metamask/controller-utils';
+import { WalletDevice } from '@metamask/transaction-controller';
 import Networks, {
   blockTagParamIndex,
   getAllNetworks,
@@ -330,7 +331,17 @@ export const getRpcMethodMiddleware = ({
           chainId: req.params[0].chainId,
           checkSelectedAddress: isMMSDK || isWalletConnect,
         });
-        next();
+
+        const { TransactionController } = Engine.context;
+        const hash = await (
+          await TransactionController.addTransaction(
+            req.params[0],
+            hostname,
+            WalletDevice.MM_MOBILE,
+          )
+        ).result;
+
+        res.result = hash;
       },
       eth_signTransaction: async () => {
         // This is implemented later in our middleware stack – specifically, in
