@@ -13,6 +13,8 @@ import ApproveTransactionReview from '../../../UI/ApproveTransactionReview';
 import AddNickname from '../../../UI/ApproveTransactionReview/AddNickname';
 import Modal from 'react-native-modal';
 import { strings } from '../../../../../locales/i18n';
+import { getNetworkNonce } from '../../../../util/networks';
+import Analytics from '../../../../core/Analytics/Analytics';
 import { setTransactionObject } from '../../../../actions/transaction';
 import { BNToHex, hexToBN } from '@metamask/controller-utils';
 import { addHexPrefix, fromWei, renderFromWei } from '../../../../util/number';
@@ -21,6 +23,7 @@ import { getGasLimit } from '../../../../util/custom-gas';
 import NotificationManager from '../../../../core/NotificationManager';
 import Logger from '../../../../util/Logger';
 import { trackEvent, trackLegacyEvent } from '../../../../util/analyticsV2';
+import AnalyticsV2 from '../../../../util/analyticsV2';
 import EditGasFee1559 from '../../../UI/EditGasFee1559';
 import EditGasFeeLegacy from '../../../UI/EditGasFeeLegacy';
 import AppConstants from '../../../../core/AppConstants';
@@ -111,10 +114,6 @@ class Approve extends PureComponent {
      * The current network of the app
      */
     network: PropTypes.string,
-    /**
-     * Indicates whether custom nonce should be shown in transaction editor
-     */
-    showCustomNonce: PropTypes.bool,
   };
 
   state = {
@@ -196,7 +195,7 @@ class Approve extends PureComponent {
     this.setState({ pollToken });
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     if (!this.props?.transaction?.id) {
       this.props.toggleApproveModal(false);
       return null;
@@ -204,8 +203,16 @@ class Approve extends PureComponent {
     if (!this.props?.transaction?.gas) this.handleGetGasLimit();
 
     this.startPolling();
+    this.props.showCustomNonce && (await this.setNetworkNonce());
 
     AppState.addEventListener('change', this.handleAppStateChange);
+  };
+
+  setNetworkNonce = async () => {
+    const { setNonce, setProposedNonce, transaction } = this.props;
+    const proposedNonce = await getNetworkNonce(transaction);
+    setNonce(proposedNonce);
+    setProposedNonce(proposedNonce);
   };
 
   handleGetGasLimit = async () => {
@@ -336,10 +343,8 @@ class Approve extends PureComponent {
   };
 
   prepareTransaction = (transaction) => {
-    const { gasEstimateType, showCustomNonce } = this.props;
+    const { gasEstimateType } = this.props;
     const { legacyGasTransaction, eip1559GasTransaction } = this.state;
-    const { nonce } = transaction;
-    if (showCustomNonce && nonce) transaction.nonce = BNToHex(nonce + 1);
     const transactionToSend = {
       ...transaction,
       value: BNToHex(transaction.value),
@@ -389,6 +394,9 @@ class Approve extends PureComponent {
       transactionConfirmed,
       eip1559GasTransaction,
     } = this.state;
+
+    // const { nonce } = this.props.transaction;
+    // console.log(nonce, 'nonce')
 
     if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
       if (this.validateGas(eip1559GasTransaction.totalMaxHex)) return;
@@ -721,8 +729,8 @@ const mapStateToProps = (state) => ({
     state.engine.backgroundState.CurrencyRateController.nativeCurrency,
   conversionRate:
     state.engine.backgroundState.CurrencyRateController.conversionRate,
+    showCustomNonce: state.settings.showCustomNonce,
   addressBook: state.engine.backgroundState.AddressBookController.addressBook,
-  showCustomNonce: state.settings.showCustomNonce,
   network: state.engine.backgroundState.NetworkController.network,
   providerType: state.engine.backgroundState.NetworkController.provider.type,
 });
@@ -730,6 +738,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setTransactionObject: (transaction) =>
     dispatch(setTransactionObject(transaction)),
+    setNonce: (nonce) => dispatch(setNonce(nonce)),
+    setProposedNonce: (nonce) => dispatch(setProposedNonce(nonce)),
 });
 
 Approve.contextType = ThemeContext;
