@@ -14,8 +14,11 @@ import AddNickname from '../../../UI/ApproveTransactionReview/AddNickname';
 import Modal from 'react-native-modal';
 import { strings } from '../../../../../locales/i18n';
 import { getNetworkNonce } from '../../../../util/networks';
-import Analytics from '../../../../core/Analytics/Analytics';
-import { setTransactionObject } from '../../../../actions/transaction';
+import {
+  setTransactionObject,
+  setNonce,
+  setProposedNonce,
+} from '../../../../actions/transaction';
 import { BNToHex, hexToBN } from '@metamask/controller-utils';
 import { addHexPrefix, fromWei, renderFromWei } from '../../../../util/number';
 import { getNormalizedTxState, getTicker } from '../../../../util/transactions';
@@ -23,7 +26,6 @@ import { getGasLimit } from '../../../../util/custom-gas';
 import NotificationManager from '../../../../core/NotificationManager';
 import Logger from '../../../../util/Logger';
 import { trackEvent, trackLegacyEvent } from '../../../../util/analyticsV2';
-import AnalyticsV2 from '../../../../util/analyticsV2';
 import EditGasFee1559 from '../../../UI/EditGasFee1559';
 import EditGasFeeLegacy from '../../../UI/EditGasFeeLegacy';
 import AppConstants from '../../../../core/AppConstants';
@@ -114,6 +116,18 @@ class Approve extends PureComponent {
      * The current network of the app
      */
     network: PropTypes.string,
+    /**
+     * Set transaction nonce
+     */
+    setNonce: PropTypes.func,
+    /**
+     * Set proposed nonce (from network)
+     */
+    setProposedNonce: PropTypes.func,
+    /**
+     * Indicates whether custom nonce should be shown in transaction editor
+     */
+    showCustomNonce: PropTypes.bool,
   };
 
   state = {
@@ -729,7 +743,7 @@ const mapStateToProps = (state) => ({
     state.engine.backgroundState.CurrencyRateController.nativeCurrency,
   conversionRate:
     state.engine.backgroundState.CurrencyRateController.conversionRate,
-    showCustomNonce: state.settings.showCustomNonce,
+  showCustomNonce: state.settings.showCustomNonce,
   addressBook: state.engine.backgroundState.AddressBookController.addressBook,
   network: state.engine.backgroundState.NetworkController.network,
   providerType: state.engine.backgroundState.NetworkController.provider.type,
@@ -738,8 +752,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setTransactionObject: (transaction) =>
     dispatch(setTransactionObject(transaction)),
-    setNonce: (nonce) => dispatch(setNonce(nonce)),
-    setProposedNonce: (nonce) => dispatch(setProposedNonce(nonce)),
+  setNonce: (nonce) => dispatch(setNonce(nonce)),
+  setProposedNonce: (nonce) => dispatch(setProposedNonce(nonce)),
 });
 
 Approve.contextType = ThemeContext;
