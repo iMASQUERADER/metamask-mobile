@@ -55,7 +55,6 @@ import TransactionTypes from '../../../../core/TransactionTypes';
 import { shallowEqual, renderShortText } from '../../../../util/general';
 import {
   isTestNet,
-  getNetworkNonce,
   isMainnetByChainId,
   isMultiLayerFeeNetwork,
   fetchEstimatedMultiLayerL1Fee,
@@ -93,6 +92,7 @@ import {
 } from '../../../../core/GasPolling/GasPolling';
 import generateTestId from '../../../../../wdio/utils/generateTestId';
 import { COMFIRM_TXN_AMOUNT } from '../../../../../wdio/screen-objects/testIDs/Screens/TransactionConfirm.testIds';
+import NetworkNonce from '../../../../util/networks/networkNonce';
 
 const EDIT = 'edit';
 const EDIT_NONCE = 'edit_nonce';
@@ -244,13 +244,6 @@ class Confirm extends PureComponent {
     multiLayerL1FeeTotal: '0x0',
   };
 
-  setNetworkNonce = async () => {
-    const { setNonce, setProposedNonce, transaction } = this.props;
-    const proposedNonce = await getNetworkNonce(transaction);
-    setNonce(proposedNonce);
-    setProposedNonce(proposedNonce);
-  };
-
   getAnalyticsParams = () => {
     try {
       const { selectedAsset, gasEstimateType, chainId } = this.props;
@@ -369,9 +362,17 @@ class Confirm extends PureComponent {
       this.getAnalyticsParams(),
     );
 
-    const { showCustomNonce, navigation, providerType, isPaymentRequest } =
-      this.props;
-    showCustomNonce && (await this.setNetworkNonce());
+    const {
+      showCustomNonce,
+      navigation,
+      providerType,
+      isPaymentRequest,
+      setNonce,
+      setProposedNonce,
+      transaction,
+    } = this.props;
+    showCustomNonce &&
+      (await NetworkNonce({ setNonce, setProposedNonce, transaction }));
     navigation.setParams({ providerType, isPaymentRequest });
     this.handleConfusables();
     this.parseTransactionDataHeader();

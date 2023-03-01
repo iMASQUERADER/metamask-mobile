@@ -32,7 +32,7 @@ import {
   calculateERC20EIP1559,
 } from '../../../../util/transactions';
 import { sumHexWEIs } from '../../../../util/conversions';
-import { getNetworkNonce, isTestNet } from '../../../../util/networks';
+import { isTestNet } from '../../../../util/networks';
 import { trackLegacyEvent } from '../../../../util/analyticsV2';
 import CustomNonceModal from '../../../UI/CustomNonceModal';
 import { setNonce, setProposedNonce } from '../../../../actions/transaction';
@@ -44,6 +44,7 @@ import AppConstants from '../../../../core/AppConstants';
 import WarningMessage from '../../../Views/SendFlow/WarningMessage';
 import { allowedToBuy } from '../../FiatOnRampAggregator';
 import { createBrowserNavDetails } from '../../../Views/Browser';
+import NetworkNonce from '../../../../util/networks/networkNonce';
 
 const createStyles = (colors) =>
   StyleSheet.create({
@@ -221,15 +222,10 @@ class TransactionReviewInformation extends PureComponent {
   };
 
   componentDidMount = async () => {
-    const { showCustomNonce } = this.props;
-    showCustomNonce && (await this.setNetworkNonce());
-  };
-
-  setNetworkNonce = async () => {
-    const { setNonce, setProposedNonce, transaction } = this.props;
-    const proposedNonce = await getNetworkNonce(transaction);
-    setNonce(proposedNonce);
-    setProposedNonce(proposedNonce);
+    const { showCustomNonce, setNonce, setProposedNonce, transaction } =
+      this.props;
+    showCustomNonce &&
+      (await NetworkNonce({ setNonce, setProposedNonce, transaction }));
   };
 
   toggleNonceModal = () =>
