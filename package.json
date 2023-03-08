@@ -144,7 +144,7 @@
     "@metamask/base-controller": "^1.1.1",
     "@metamask/composable-controller": "^1.0.1",
     "@metamask/contract-metadata": "^2.1.0",
-    "@metamask/controller-utils": "^1.0.0",
+    "@metamask/controller-utils": "3.0.0-preview.3a92159",
     "@metamask/design-tokens": "^1.11.1",
     "@metamask/etherscan-link": "^2.0.0",
     "@metamask/gas-fee-controller": "^2.0.1",
