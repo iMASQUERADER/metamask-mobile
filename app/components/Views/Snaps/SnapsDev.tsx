@@ -20,6 +20,7 @@ import { createStyles } from './styles';
  *
  * local:http://localhost:3000/snap/
  * local:http://localhost:3000/helloworldsnap/
+ * npm:@consensys/starknet-snap
  */
 
 const SnapsDev = () => {
@@ -27,7 +28,7 @@ const SnapsDev = () => {
   const { colors } = useTheme();
 
   const [snapInput, setSnapInput] = useState<string>(
-    'local:http://localhost:3000/snap/',
+    'npm:@consensys/starknet-snap',
   );
   const snaps = useSelector(
     (state: any) => state.engine.backgroundState.SnapController.snaps,

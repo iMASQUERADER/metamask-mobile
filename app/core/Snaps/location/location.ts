@@ -1,20 +1,8 @@
-import { SemVerRange, SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 import { LocalLocation } from './local';
+import { NpmLocation, NpmOptions } from './npm';
 
-export interface NpmOptions {
-  /**
-   * @default DEFAULT_REQUESTED_SNAP_VERSION
-   */
-  versionRange?: SemVerRange;
-  /**
-   * Whether to allow custom NPM registries outside of {@link DEFAULT_NPM_REGISTRY}.
-   *
-   * @default false
-   */
-  allowCustomRegistries?: boolean;
-}
-
-type DetectSnapLocationOptions = NpmOptions & {
+export type DetectSnapLocationOptions = NpmOptions & {
   /**
    * The function used to fetch data.
    *
@@ -48,14 +36,21 @@ export interface SnapLocation {
  * @param opts - NPM options and feature flags.
  * @returns SnapLocation based on url.
  */
+
+const SNAPS_LOCATION_LOG_TAG = 'Snaps/ location';
+
 export function detectSnapLocation(
   location: string | URL,
   opts?: DetectSnapLocationOptions,
 ): SnapLocation {
   const root = new URL(location.toString());
+  console.log(SNAPS_LOCATION_LOG_TAG, root);
   switch (root.protocol) {
     case 'local:':
       return new LocalLocation(root, opts);
+    case 'npm:':
+      console.log(SNAPS_LOCATION_LOG_TAG, 'creating NPM location');
+      return new NpmLocation(root, opts);
     default:
       throw new TypeError(
         `Unrecognized "${root.protocol}" snap location protocol.`,

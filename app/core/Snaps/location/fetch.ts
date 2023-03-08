@@ -29,6 +29,11 @@ const convertFetchBlobResponseToResponse = async (
   const headers = new Headers(fetchBlobResponse.respInfo.headers);
   const status = fetchBlobResponse.respInfo.status;
   const dataPath = fetchBlobResponse.data;
+  console.log(
+    SNAPS_FETCH_LOG_TAG,
+    'convertFetchBlobResponseToResponse dataPath',
+    dataPath,
+  );
   const data = await readAndParseFile(dataPath);
   const response = new Response(data, { headers, status });
   return response;
@@ -40,9 +45,12 @@ export const fetchFunction = async (
   const { config } = ReactNativeBlobUtil;
   const urlToFetch: string =
     typeof inputRequest === 'string' ? inputRequest : inputRequest.url;
+  console.log(SNAPS_FETCH_LOG_TAG, 'url to fetch', urlToFetch);
   const response: FetchBlobResponse = await config({ fileCache: true }).fetch(
     'GET',
     urlToFetch,
   );
-  return await convertFetchBlobResponseToResponse(response);
+  const rsp = await convertFetchBlobResponseToResponse(response);
+  console.log(SNAPS_FETCH_LOG_TAG, 'fetchFunction response');
+  return rsp;
 };
