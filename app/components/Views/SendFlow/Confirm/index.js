@@ -92,7 +92,7 @@ import {
 } from '../../../../core/GasPolling/GasPolling';
 import generateTestId from '../../../../../wdio/utils/generateTestId';
 import { COMFIRM_TXN_AMOUNT } from '../../../../../wdio/screen-objects/testIDs/Screens/TransactionConfirm.testIds';
-import NetworkNonce from '../../../../util/networks/networkNonce';
+import setNetworkNonce from '../../../../util/networks/networkNonce';
 
 const EDIT = 'edit';
 const EDIT_NONCE = 'edit_nonce';
@@ -369,10 +369,10 @@ class Confirm extends PureComponent {
       isPaymentRequest,
       setNonce,
       setProposedNonce,
-      transaction,
+      transaction: { from },
     } = this.props;
     if (showCustomNonce) {
-      NetworkNonce({ setNonce, setProposedNonce, transaction });
+      setNetworkNonce({ setNonce, setProposedNonce, from });
     }
     navigation.setParams({ providerType, isPaymentRequest });
     this.handleConfusables();
