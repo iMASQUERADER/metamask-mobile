@@ -65,10 +65,10 @@ const unzipData = (base64Data: string): string =>
  * @returns {string} Path to the file containing the unzipped data.
  */
 const unzip = (base64: string, snapId: string): string => {
-  const filePath = RNFetchBlob.fs.dirs.DocumentDir + `/snap-${snapId}`;
+  const filePath = ReactNativeBlobUtil.fs.dirs.DocumentDir + `/snap-${snapId}`;
   const unzipped = unzipData(base64);
 
-  RNFetchBlob.fs.writeFile(filePath, unzipped, 'utf8');
+  ReactNativeBlobUtil.fs.writeFile(filePath, unzipped, 'utf8');
   return filePath;
 };
 

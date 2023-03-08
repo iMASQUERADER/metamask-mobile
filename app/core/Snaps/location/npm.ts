@@ -18,6 +18,7 @@ import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { Readable, Writable } from 'stream';
 // import { extract as tarExtract } from 'tar-stream';
+import downloadFile from '../../../util/browser/downloadFile';
 
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 
@@ -56,7 +57,64 @@ export interface NpmOptions {
   allowCustomRegistries?: boolean;
 }
 
+/* eslint-disable import/prefer-default-export */
+import ReactNativeBlobUtil, { FetchBlobResponse } from 'react-native-blob-util';
+import Logger from '../../../util/Logger';
+
 const SNAPS_NPM_LOG_TAG = 'Snaps/ NPM';
+
+/**
+ * Reads and parses file from ReactNativeBlobUtil response
+ * @param path The path to the file to read and parse.
+ * @returns The parsed file data.
+ */
+const readAndParseFile = async (path: string) => {
+  try {
+    console.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile path', path);
+    const data = await ReactNativeBlobUtil.fs.readFile(path, 'base64');
+    return data;
+  } catch (error) {
+    Logger.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile error', error);
+  }
+};
+
+/**
+ * Converts a FetchBlobResponse object to a React Native Response object.
+ * @param response The FetchBlobResponse object to convert.
+ * @returns A new Response object with the same data as the input object.
+ */
+const convertFetchBlobResponseToResponse = async (
+  fetchBlobResponse: FetchBlobResponse,
+): Promise<Response> => {
+  const headers = new Headers(fetchBlobResponse.respInfo.headers);
+  const status = fetchBlobResponse.respInfo.status;
+  const dataPath = fetchBlobResponse.data;
+  console.log(
+    SNAPS_NPM_LOG_TAG,
+    'convertFetchBlobResponseToResponse input',
+    fetchBlobResponse,
+  );
+  const data = await readAndParseFile(dataPath);
+  const response = new Response(data, { headers, status });
+  return response;
+};
+
+const fetchNPMFunction = async (
+  inputRequest: RequestInfo,
+): Promise<Response> => {
+  console.log(SNAPS_NPM_LOG_TAG, 'custom fetchNPMFunction', inputRequest);
+  const { config } = ReactNativeBlobUtil;
+  const filePath = `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/archive.tgz`;
+  const urlToFetch: string =
+    typeof inputRequest === 'string' ? inputRequest : inputRequest.url;
+  const response: FetchBlobResponse = await config({
+    fileCache: true,
+    path: filePath,
+  }).fetch('GET', urlToFetch);
+  const rsp = await convertFetchBlobResponseToResponse(response);
+  console.log(SNAPS_NPM_LOG_TAG, 'fetchFunction response', rsp);
+  return rsp;
+};
 
 export class NpmLocation implements SnapLocation {
   private readonly meta: NpmMeta;
@@ -171,6 +229,7 @@ export class NpmLocation implements SnapLocation {
   }
 
   async #lazyInit() {
+    console.log(SNAPS_NPM_LOG_TAG, 'lazyInit');
     assert(this.files === undefined);
     const [tarballResponse, actualVersion] = await fetchNpmTarball(
       this.meta.packageName,
@@ -179,6 +238,8 @@ export class NpmLocation implements SnapLocation {
       this.meta.fetch,
     );
     this.meta.version = actualVersion;
+
+    console.log(SNAPS_NPM_LOG_TAG, 'lazyInit tarball', tarballResponse);
 
     let canonicalBase = 'npm://';
     if (this.meta.registry.username !== '') {
@@ -193,6 +254,7 @@ export class NpmLocation implements SnapLocation {
     // TODO(ritave): Lazily extract files instead of up-front extracting all of them
     //               We would need to replace tar-stream package because it requires immediate consumption of streams.
     await new Promise<void>((resolve, reject) => {
+      console.log(SNAPS_NPM_LOG_TAG, 'lazyInit new promise');
       this.files = new Map();
       pump(
         getNodeStream(tarballResponse),
@@ -207,6 +269,7 @@ export class NpmLocation implements SnapLocation {
           error ? reject(error) : resolve();
         },
       );
+      console.log(SNAPS_NPM_LOG_TAG, 'lazyInit finished pump');
     });
   }
 }
@@ -244,12 +307,6 @@ async function fetchNpmTarball(
       `Failed to fetch package "${packageName}" metadata from npm.`,
     );
   }
-  console.log(
-    SNAPS_NPM_LOG_TAG,
-    'fetchNpmTarball packageMetadata:',
-    packageMetadata,
-  );
-
   const versions = Object.keys((packageMetadata as any)?.versions ?? {}).map(
     (version) => {
       assertIsSemVerVersion(version);
@@ -292,21 +349,29 @@ async function fetchNpmTarball(
 
   // Override the tarball hostname/protocol with registryUrl hostname/protocol
   const newRegistryUrl = new URL(registryUrl);
-  const newTarballUrl = new URL(tarballUrlString);
+  const newTarballUrl = new URL(tarballUrlString.toString());
   newTarballUrl.hostname = newRegistryUrl.hostname;
   newTarballUrl.protocol = newRegistryUrl.protocol;
 
   // Perform a raw fetch because we want the Response object itself.
-  const tarballResponse = await fetchFunction(newTarballUrl.toString());
+  const tarballResponse = await fetchNPMFunction(newTarballUrl.toString());
   console.log(
     SNAPS_NPM_LOG_TAG,
     'fetchNpmTarball tarballResponse:',
     tarballResponse,
   );
-  if (!tarballResponse.ok || !tarballResponse.body) {
+  const tarBallBody = await tarballResponse.text();
+  if (!tarballResponse.ok || !tarBallBody) {
+    console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball error');
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
-  return [tarballResponse.body, targetVersion];
+  console.log(
+    SNAPS_NPM_LOG_TAG,
+    'fetchNpmTarball return with tarBallBody',
+    tarBallBody,
+    targetVersion,
+  );
+  return [tarBallBody, targetVersion];
 }
 
 /**
