@@ -12,14 +12,6 @@ import {
   normalizeRelative,
 } from '@metamask/snaps-utils';
 import { assert, assertStruct, isObject } from '@metamask/utils';
-import concat from 'concat-stream';
-import createGunzipStream from 'gunzip-maybe';
-import pump from 'pump';
-import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
-// eslint-disable-next-line import/no-nodejs-modules
-import { Readable, Writable } from 'stream';
-import { extract as tarExtract } from 'tar-stream';
-import ReadableStream from 'readable-stream';
 
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 
@@ -69,10 +61,24 @@ const SNAPS_NPM_LOG_TAG = 'Snaps/ NPM';
  * @param path The path to the file to read and parse.
  * @returns The parsed file data.
  */
-const readAndParseFile = async (path: string) => {
+const readAndParseSourceCode = async (path: string) => {
   try {
     console.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile path', path);
-    const data = await ReactNativeBlobUtil.fs.readFile(path, 'base64');
+    const goodFilePath =
+      '/Users/owencraston/Library/Developer/CoreSimulator/Devices/91A956BB-437B-42D2-AE67-DF25C6751A33/data/Containers/Data/Application/F572575F-F757-4337-85CB-1C7136B7E4C3/Documents/package/dist/bundle.js';
+    const data = await ReactNativeBlobUtil.fs.readFile(goodFilePath, 'utf8');
+    return data;
+  } catch (error) {
+    Logger.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile error', error);
+  }
+};
+
+const fetchManifest = async (path: string) => {
+  try {
+    console.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile path', path);
+    const goodFilePath =
+      '/Users/owencraston/Library/Developer/CoreSimulator/Devices/91A956BB-437B-42D2-AE67-DF25C6751A33/data/Containers/Data/Application/F572575F-F757-4337-85CB-1C7136B7E4C3/Documents/package/snap.manifest.json';
+    const data = await ReactNativeBlobUtil.fs.readFile(goodFilePath, 'utf8');
     return data;
   } catch (error) {
     Logger.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile error', error);
@@ -95,7 +101,7 @@ const convertFetchBlobResponseToResponse = async (
     'convertFetchBlobResponseToResponse input',
     fetchBlobResponse,
   );
-  const data = await readAndParseFile(dataPath);
+  const data = await readAndParseSourceCode(dataPath);
   const response = new Response(data, { headers, status });
   return response;
 };
@@ -115,6 +121,29 @@ const fetchNPMFunction = async (
   const rsp = await convertFetchBlobResponseToResponse(response);
   console.log(SNAPS_NPM_LOG_TAG, 'fetchFunction response', rsp);
   return rsp;
+};
+
+/**
+ * The paths of files within npm tarballs appear to always be prefixed with
+ * "package/".
+ */
+
+function toCanonical(path: string): URL {
+  assert(!path.startsWith('/'), 'Tried to parse absolute path.');
+  return new URL(path);
+}
+
+const convertSourceCodeToVFile = (
+  sourceCode: string,
+  canonicalPath: string,
+): VirtualFile => {
+  const canonical = toCanonical(canonicalPath);
+  const vFile = new VirtualFile({
+    value: sourceCode,
+    path: 'test',
+    data: { canonical },
+  });
+  return vFile;
 };
 
 export class NpmLocation implements SnapLocation {
@@ -175,7 +204,7 @@ export class NpmLocation implements SnapLocation {
 
     this.meta = {
       requestedRange,
-      registry,
+      registry: registry.toString(),
       packageName,
       fetch: fetchFunction,
     };
@@ -187,10 +216,21 @@ export class NpmLocation implements SnapLocation {
       return this.validatedManifest.clone();
     }
 
-    const vfile = await this.fetch('snap.manifest.json');
-    const result = JSON.parse(vfile.toString());
-    vfile.result = createSnapManifest(result);
+    // const vfile = await this.fetch('snap.manifest.json');
+    const content = await fetchManifest('snap.manifest.json');
+    const manifest = JSON.parse(content);
+    const canonicalPath = new URL(
+      this.meta.packageName,
+      this.registry,
+    ).toString();
+    const vfile = new VirtualFile<SnapManifest>({
+      value: content.toString(),
+      result: createSnapManifest(manifest),
+      path: 'snap.manifest.json',
+      data: { canonicalPath },
+    });
     this.validatedManifest = vfile as VirtualFile<SnapManifest>;
+    console.log(SNAPS_NPM_LOG_TAG, 'Manifest good', this.validatedManifest);
     return this.manifest();
   }
 
@@ -198,14 +238,20 @@ export class NpmLocation implements SnapLocation {
     console.log(SNAPS_NPM_LOG_TAG, 'fetch called with path: ', path);
     const relativePath = normalizeRelative(path);
     if (!this.files) {
-      await this.#lazyInit();
+      console.log(SNAPS_NPM_LOG_TAG, 'setting files');
+      const sourceCodeFile = await this.#lazyInit();
+      this.files = new Map<string, VirtualFile>();
+      this.files.set(relativePath, sourceCodeFile);
       assert(this.files !== undefined);
+      console.log(SNAPS_NPM_LOG_TAG, 'files set with sourceCode');
     }
+    console.log(SNAPS_NPM_LOG_TAG, 'files set');
     const vfile = this.files.get(relativePath);
     assert(
       vfile !== undefined,
       new TypeError(`File "${path}" not found in package.`),
     );
+    console.log(SNAPS_NPM_LOG_TAG, 'init done');
     return vfile.clone();
   }
 
@@ -229,18 +275,16 @@ export class NpmLocation implements SnapLocation {
     return this.meta.requestedRange;
   }
 
-  async #lazyInit() {
+  async #lazyInit(): Promise<VirtualFile> {
     console.log(SNAPS_NPM_LOG_TAG, 'lazyInit');
     assert(this.files === undefined);
-    const [tarballResponse, actualVersion] = await fetchNpmTarball(
+    const [sourceCode, actualVersion] = await fetchNpmTarball(
       this.meta.packageName,
       this.meta.requestedRange,
       this.meta.registry,
       this.meta.fetch,
     );
     this.meta.version = actualVersion;
-
-    console.log(SNAPS_NPM_LOG_TAG, 'lazyInit tarball', tarballResponse);
 
     let canonicalBase = 'npm://';
     if (this.meta.registry.username !== '') {
@@ -252,26 +296,8 @@ export class NpmLocation implements SnapLocation {
     }
     canonicalBase += this.meta.registry.host;
 
-    // TODO(ritave): Lazily extract files instead of up-front extracting all of them
-    //               We would need to replace tar-stream package because it requires immediate consumption of streams.
-    await new Promise<void>((resolve, reject) => {
-      console.log(SNAPS_NPM_LOG_TAG, 'lazyInit new promise');
-      this.files = new Map();
-      pump(
-        getNodeStream(tarballResponse),
-        // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
-        // before we can actually grab any files from it.
-        createGunzipStream(),
-        createTarballStream(
-          `${canonicalBase}/${this.meta.packageName}/`,
-          this.files,
-        ),
-        (error) => {
-          error ? reject(error) : resolve();
-        },
-      );
-      console.log(SNAPS_NPM_LOG_TAG, 'lazyInit finished pump');
-    });
+    const vFile = convertSourceCodeToVFile(sourceCode, canonicalBase);
+    return vFile;
   }
 }
 
@@ -293,7 +319,7 @@ async function fetchNpmTarball(
   versionRange: SemVerRange,
   registryUrl: string,
   fetchFunction: typeof fetch,
-): Promise<[ReadableStream, SemVerVersion]> {
+): Promise<[string, SemVerVersion]> {
   console.log(
     SNAPS_NPM_LOG_TAG,
     'fetchNpmTarball called with packageName: ',
@@ -356,112 +382,10 @@ async function fetchNpmTarball(
 
   // Perform a raw fetch because we want the Response object itself.
   const tarballResponse = await fetchNPMFunction(newTarballUrl.toString());
-  console.log(
-    SNAPS_NPM_LOG_TAG,
-    'fetchNpmTarball tarballResponse:',
-    tarballResponse,
-  );
-  const tarBallBody = await tarballResponse;
-  if (!tarballResponse.ok || !tarBallBody) {
+  const sourceCode = await tarballResponse.text();
+  if (!tarballResponse.ok || !sourceCode) {
     console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball error');
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
-  console.log(
-    SNAPS_NPM_LOG_TAG,
-    'fetchNpmTarball return with tarBallBody',
-    tarBallBody,
-    targetVersion,
-  );
-  return [tarBallBody, targetVersion];
-}
-
-/**
- * The paths of files within npm tarballs appear to always be prefixed with
- * "package/".
- */
-const NPM_TARBALL_PATH_PREFIX = /^package\//u;
-
-/**
- * Converts a {@link ReadableStream} to a Node.js {@link Readable}
- * stream. Returns the stream directly if it is already a Node.js stream.
- * We can't use the native Web {@link ReadableStream} directly because the
- * other stream libraries we use expect Node.js streams.
- *
- * @param stream - The stream to convert.
- * @returns The given stream as a Node.js Readable stream.
- */
-function getNodeStream(stream: ReadableStream): Readable {
-  console.log(SNAPS_NPM_LOG_TAG, 'getNodeStream called');
-  if (typeof stream.getReader !== 'function') {
-    return stream as unknown as Readable;
-  }
-
-  return new ReadableWebToNodeStream(stream);
-}
-
-/**
- * Creates a `tar-stream` that will get the necessary files from an npm Snap
- * package tarball (`.tgz` file).
- *
- * @param canonicalBase - A base URI as specified in {@link https://github.com/MetaMask/SIPs/blob/main/SIPS/sip-8.md SIP-8}. Starting with 'npm:'. Will be used for canonicalPath vfile argument.
- * @param files - An object to write target file contents to.
- * @returns The {@link Writable} tarball extraction stream.
- */
-function createTarballStream(
-  canonicalBase: string,
-  files: Map<string, VirtualFile>,
-): Writable {
-  assert(
-    canonicalBase.endsWith('/'),
-    "Base needs to end with '/' for relative paths to be added as children instead of siblings.",
-  );
-
-  assert(
-    canonicalBase.startsWith('npm:'),
-    'Protocol mismatch, expected "npm:".',
-  );
-  // `tar-stream` is pretty old-school, so we create it first and then
-  // instrument it by adding event listeners.
-  const extractStream = tarExtract();
-
-  console.log(
-    SNAPS_NPM_LOG_TAG,
-    'createTarballStream called with',
-    canonicalBase,
-    files,
-  );
-
-  // "entry" is fired for every discreet entity in the tarball. This includes
-  // files and folders.
-  extractStream.on('entry', (header, entryStream, next) => {
-    const { name: headerName, type: headerType } = header;
-    if (headerType === 'file') {
-      // The name is a path if the header type is "file".
-      const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, '');
-      return entryStream.pipe(
-        concat((data) => {
-          const vfile = new VirtualFile({
-            value: data,
-            path,
-            data: {
-              canonicalPath: new URL(path, canonicalBase).toString(),
-            },
-          });
-          assert(
-            !files.has(path),
-            'Malformed tarball, multiple files with the same path.',
-          );
-          files.set(path, vfile);
-          return next();
-        }),
-      );
-    }
-
-    // If we get here, the entry is not a file, and we want to ignore. The entry
-    // stream must be drained, or the extractStream will stop reading. This is
-    // effectively a no-op for the current entry.
-    entryStream.on('end', () => next());
-    return entryStream.resume();
-  });
-  return extractStream;
+  return [sourceCode, targetVersion];
 }
