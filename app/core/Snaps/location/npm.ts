@@ -16,9 +16,10 @@ import concat from 'concat-stream';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
+// eslint-disable-next-line import/no-nodejs-modules
 import { Readable, Writable } from 'stream';
-// import { extract as tarExtract } from 'tar-stream';
-import downloadFile from '../../../util/browser/downloadFile';
+import { extract as tarExtract } from 'tar-stream';
+import ReadableStream from 'readable-stream';
 
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 
@@ -360,7 +361,7 @@ async function fetchNpmTarball(
     'fetchNpmTarball tarballResponse:',
     tarballResponse,
   );
-  const tarBallBody = await tarballResponse.text();
+  const tarBallBody = await tarballResponse;
   if (!tarballResponse.ok || !tarBallBody) {
     console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball error');
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
@@ -390,6 +391,7 @@ const NPM_TARBALL_PATH_PREFIX = /^package\//u;
  * @returns The given stream as a Node.js Readable stream.
  */
 function getNodeStream(stream: ReadableStream): Readable {
+  console.log(SNAPS_NPM_LOG_TAG, 'getNodeStream called');
   if (typeof stream.getReader !== 'function') {
     return stream as unknown as Readable;
   }
@@ -421,6 +423,13 @@ function createTarballStream(
   // `tar-stream` is pretty old-school, so we create it first and then
   // instrument it by adding event listeners.
   const extractStream = tarExtract();
+
+  console.log(
+    SNAPS_NPM_LOG_TAG,
+    'createTarballStream called with',
+    canonicalBase,
+    files,
+  );
 
   // "entry" is fired for every discreet entity in the tarball. This includes
   // files and folders.
