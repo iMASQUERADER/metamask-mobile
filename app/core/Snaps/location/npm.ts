@@ -61,11 +61,16 @@ const SNAPS_NPM_LOG_TAG = 'snaps/ NPM';
  * @param path The path to the file to read and parse.
  * @returns The parsed file data.
  */
+
+const baseFilePath = '/Users/owencraston/Documents/package';
 const readAndParseSourceCode = async (path: string) => {
   try {
-    console.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile path', path);
-    const goodFilePath =
-      '/Users/owencraston/Library/Developer/CoreSimulator/Devices/91A956BB-437B-42D2-AE67-DF25C6751A33/data/Containers/Data/Application/F572575F-F757-4337-85CB-1C7136B7E4C3/Documents/package/dist/bundle.js';
+    console.log(
+      SNAPS_NPM_LOG_TAG,
+      'readAndParseSourceCode called with path',
+      path,
+    );
+    const goodFilePath = `${baseFilePath}/dist/bundle.js`;
     const data = await ReactNativeBlobUtil.fs.readFile(goodFilePath, 'utf8');
     return data;
   } catch (error) {
@@ -73,11 +78,10 @@ const readAndParseSourceCode = async (path: string) => {
   }
 };
 
-const fetchManifest = async (path: string) => {
+const readAndParseManifest = async (path: string) => {
   try {
-    console.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile path', path);
-    const goodFilePath =
-      '/Users/owencraston/Library/Developer/CoreSimulator/Devices/91A956BB-437B-42D2-AE67-DF25C6751A33/data/Containers/Data/Application/F572575F-F757-4337-85CB-1C7136B7E4C3/Documents/package/snap.manifest.json';
+    console.log(SNAPS_NPM_LOG_TAG, 'readAndParseManifest path', path);
+    const goodFilePath = `${baseFilePath}/snap.manifest.json`;
     const data = await ReactNativeBlobUtil.fs.readFile(goodFilePath, 'utf8');
     return data;
   } catch (error) {
@@ -114,6 +118,7 @@ const fetchNPMFunction = async (
     path: filePath,
   }).fetch('GET', urlToFetch);
   const rsp = await convertFetchBlobResponseToResponse(response);
+  console.log(SNAPS_NPM_LOG_TAG, 'custom fetchNPMFunction response', rsp);
   return rsp;
 };
 
@@ -287,7 +292,7 @@ export class NpmLocation implements SnapLocation {
 
     console.log(SNAPS_NPM_LOG_TAG, 'canonicalBase', canonicalBase);
 
-    const manifestContent = await fetchManifest('snap.manifest.json');
+    const manifestContent = await readAndParseManifest('snap.manifest.json');
     const manifest = JSON.parse(manifestContent);
     const manifestVFile = new VirtualFile<SnapManifest>({
       value: manifestContent.toString(),
@@ -298,6 +303,8 @@ export class NpmLocation implements SnapLocation {
       },
     });
 
+    console.log(SNAPS_NPM_LOG_TAG, 'lazyint manifest good');
+
     const sourceCodeVFile = new VirtualFile({
       value: sourceCode,
       path: 'dist/bundle.js',
@@ -307,6 +314,7 @@ export class NpmLocation implements SnapLocation {
     this.files = new Map<string, VirtualFile>();
     this.files.set('snap.manifest.json', manifestVFile);
     this.files.set('dist/bundle.js', sourceCodeVFile);
+    console.log(SNAPS_NPM_LOG_TAG, 'lazyint manifest good');
   }
 }
 
@@ -394,5 +402,6 @@ async function fetchNpmTarball(
     console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball error');
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
+  console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball return', sourceCode);
   return [sourceCode, targetVersion];
 }
