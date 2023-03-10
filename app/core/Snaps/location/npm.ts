@@ -118,7 +118,7 @@ const fetchNPMFunction = async (
     path: filePath,
   }).fetch('GET', urlToFetch);
   const rsp = await convertFetchBlobResponseToResponse(response);
-  console.log(SNAPS_NPM_LOG_TAG, 'custom fetchNPMFunction response', rsp);
+  console.log(SNAPS_NPM_LOG_TAG, 'custom fetchNPMFunction got response');
   return rsp;
 };
 
@@ -402,6 +402,6 @@ async function fetchNpmTarball(
     console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball error');
     throw new Error(`Failed to fetch tarball for package "${packageName}".`);
   }
-  console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball return', sourceCode);
+  console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball return');
   return [sourceCode, targetVersion];
 }
