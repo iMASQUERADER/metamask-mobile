@@ -484,6 +484,13 @@ PODS:
     - React
   - RNVectorIcons (6.4.2):
     - React
+  - RNZipArchive (6.0.9):
+    - React-Core
+    - RNZipArchive/Core (= 6.0.9)
+    - SSZipArchive (~> 2.2)
+  - RNZipArchive/Core (6.0.9):
+    - React-Core
+    - SSZipArchive (~> 2.2)
   - segment-analytics-react-native (2.13.0):
     - React-Core
     - sovran-react-native
@@ -492,6 +499,7 @@ PODS:
   - Sentry/Core (6.1.4)
   - sovran-react-native (0.4.5):
     - React-Core
+  - SSZipArchive (2.4.3)
   - TcpSockets (4.0.0):
     - CocoaAsyncSocket
     - React
@@ -597,6 +605,7 @@ DEPENDENCIES:
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - RNZipArchive (from `../node_modules/react-native-zip-archive`)
   - "segment-analytics-react-native (from `../node_modules/@segment/analytics-react-native`)"
   - "sovran-react-native (from `../node_modules/@segment/sovran-react-native`)"
   - TcpSockets (from `../node_modules/react-native-tcp`)
@@ -621,6 +630,7 @@ SPEC REPOS:
     - lottie-ios
     - OpenSSL-Universal
     - Sentry
+    - SSZipArchive
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -772,6 +782,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  RNZipArchive:
+    :path: "../node_modules/react-native-zip-archive"
   segment-analytics-react-native:
     :path: "../node_modules/@segment/analytics-react-native"
   sovran-react-native:
@@ -872,9 +884,11 @@ SPEC CHECKSUMS:
   RNShare: f116bbb04f310c665ca483d0bd1e88cf59b3b334
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 6607bd3a30291d0edb56f9bbe7ae411ee2b928b0
+  RNZipArchive: 68a0c6db4b1c103f846f1559622050df254a3ade
   segment-analytics-react-native: bd1f13ea95bad2313a9c7130da032af0e9a6da60
   Sentry: 9d055e2de30a77685e86b219acf02e59b82091fc
   sovran-react-native: fd3dc8f1a4b14acdc4ad25fc6b4ac4f52a2a2a15
+  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   TcpSockets: a8eb6b5867fe643e6cfed5db2e4de62f4d1e8fd0
   Yoga: b316a990bb6d115afa1b436b5626ac7c61717d17
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

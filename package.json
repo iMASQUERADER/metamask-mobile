@@ -309,6 +309,7 @@
     "react-native-view-shot": "^3.1.2",
     "react-native-webrtc": "^106.0.0-beta.7",
     "react-native-webview": "11.13.0",
+    "react-native-zip-archive": "^6.0.9",
     "react-redux": "7.2.4",
     "readable-stream": "1.0.33",
     "readable-web-to-node-stream": "^3.0.2",

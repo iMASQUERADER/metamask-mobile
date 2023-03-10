@@ -14,6 +14,7 @@ import {
 import { assert, assertStruct, isObject } from '@metamask/utils';
 
 import { DetectSnapLocationOptions, SnapLocation } from './location';
+import { zip, unzip, unzipAssets, subscribe } from 'react-native-zip-archive';
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
@@ -62,6 +63,23 @@ const SNAPS_NPM_LOG_TAG = 'snaps/ NPM';
  * @returns The parsed file data.
  */
 
+const decompressFile = async (
+  path: string,
+  targetPath: string,
+): Promise<string> => {
+  try {
+    const unzippedPath = await unzip(
+      '/Users/owencraston/Documents/package.zip',
+      targetPath,
+    );
+    console.log(SNAPS_NPM_LOG_TAG, 'decompressFile unzippedPath', unzippedPath);
+    return unzippedPath;
+  } catch (error) {
+    Logger.log(SNAPS_NPM_LOG_TAG, 'decompressFile error', error);
+    throw new Error(`decompressFile error: ${error}`);
+  }
+};
+
 const baseFilePath = '/Users/owencraston/Documents/package 2';
 const readAndParseSourceCode = async (path: string) => {
   try {
@@ -70,8 +88,15 @@ const readAndParseSourceCode = async (path: string) => {
       'readAndParseSourceCode called with path',
       path,
     );
-    const goodFilePath = `${baseFilePath}/dist/bundle.js`;
-    const data = await ReactNativeBlobUtil.fs.readFile(goodFilePath, 'utf8');
+    const sourceCodePath = '/package/dist/bundle.js';
+
+    const targetPath = ReactNativeBlobUtil.fs.dirs.DocumentDir;
+    const unzippedPath = await decompressFile(path, targetPath);
+    const data = await ReactNativeBlobUtil.fs.readFile(
+      `${unzippedPath}${sourceCodePath}`,
+      'utf8',
+    );
+    console.log(SNAPS_NPM_LOG_TAG, 'readAndParseSourceCode data', data);
     return data;
   } catch (error) {
     Logger.log(SNAPS_NPM_LOG_TAG, 'readAndParseFile error', error);
@@ -110,7 +135,7 @@ const fetchNPMFunction = async (
 ): Promise<Response> => {
   console.log(SNAPS_NPM_LOG_TAG, 'custom fetchNPMFunction', inputRequest);
   const { config } = ReactNativeBlobUtil;
-  const filePath = `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/archive.tgz`;
+  const filePath = `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/archive.zip`;
   const urlToFetch: string =
     typeof inputRequest === 'string' ? inputRequest : inputRequest.url;
   const response: FetchBlobResponse = await config({
@@ -118,7 +143,6 @@ const fetchNPMFunction = async (
     path: filePath,
   }).fetch('GET', urlToFetch);
   const rsp = await convertFetchBlobResponseToResponse(response);
-  console.log(SNAPS_NPM_LOG_TAG, 'custom fetchNPMFunction got response');
   return rsp;
 };
 
@@ -190,32 +214,6 @@ export class NpmLocation implements SnapLocation {
       fetch: fetchFunction,
     };
   }
-
-  // async manifest(): Promise<VirtualFile<SnapManifest>> {
-  //   console.log(SNAPS_NPM_LOG_TAG, 'Fetching manifest');
-  //   if (this.validatedManifest) {
-  //     return this.validatedManifest.clone();
-  //   }
-
-  //   // const vfile = await this.fetch('snap.manifest.json');
-  //   const content = await fetchManifest('snap.manifest.json');
-  //   const manifest = JSON.parse(content);
-  //   const canonicalPath = new URL(
-  //     this.meta.packageName,
-  //     this.registry,
-  //   ).toString();
-  //   const vfile = new VirtualFile<SnapManifest>({
-  //     value: content.toString(),
-  //     result: createSnapManifest(manifest),
-  //     path: 'snap.manifest.json',
-  //     data: {
-  //       canonicalPath:
-  //         'npm:https://registry.npmjs.org/@consensys/starknet-snap/snap.manifest.json',
-  //     },
-  //   });
-  //   this.validatedManifest = vfile as VirtualFile<SnapManifest>;
-  //   return this.manifest();
-  // }
 
   async manifest(): Promise<VirtualFile<SnapManifest>> {
     if (this.validatedManifest) {
