@@ -54,7 +54,7 @@ export interface NpmOptions {
 import ReactNativeBlobUtil, { FetchBlobResponse } from 'react-native-blob-util';
 import Logger from '../../../util/Logger';
 
-const SNAPS_NPM_LOG_TAG = 'Snaps/ NPM';
+const SNAPS_NPM_LOG_TAG = 'snaps/ NPM';
 
 /**
  * Reads and parses file from ReactNativeBlobUtil response
@@ -122,24 +122,6 @@ const fetchNPMFunction = async (
  * "package/".
  */
 
-function toCanonical(path: string): URL {
-  assert(!path.startsWith('/'), 'Tried to parse absolute path.');
-  return new URL(path);
-}
-
-const convertSourceCodeToVFile = (
-  sourceCode: string,
-  canonicalPath: string,
-): VirtualFile => {
-  const canonical = toCanonical(canonicalPath);
-  const vFile = new VirtualFile({
-    value: sourceCode,
-    path: 'test',
-    data: { canonical },
-  });
-  return vFile;
-};
-
 export class NpmLocation implements SnapLocation {
   private readonly meta: NpmMeta;
 
@@ -204,29 +186,42 @@ export class NpmLocation implements SnapLocation {
     };
   }
 
+  // async manifest(): Promise<VirtualFile<SnapManifest>> {
+  //   console.log(SNAPS_NPM_LOG_TAG, 'Fetching manifest');
+  //   if (this.validatedManifest) {
+  //     return this.validatedManifest.clone();
+  //   }
+
+  //   // const vfile = await this.fetch('snap.manifest.json');
+  //   const content = await fetchManifest('snap.manifest.json');
+  //   const manifest = JSON.parse(content);
+  //   const canonicalPath = new URL(
+  //     this.meta.packageName,
+  //     this.registry,
+  //   ).toString();
+  //   const vfile = new VirtualFile<SnapManifest>({
+  //     value: content.toString(),
+  //     result: createSnapManifest(manifest),
+  //     path: 'snap.manifest.json',
+  //     data: {
+  //       canonicalPath:
+  //         'npm:https://registry.npmjs.org/@consensys/starknet-snap/snap.manifest.json',
+  //     },
+  //   });
+  //   this.validatedManifest = vfile as VirtualFile<SnapManifest>;
+  //   return this.manifest();
+  // }
+
   async manifest(): Promise<VirtualFile<SnapManifest>> {
-    console.log(SNAPS_NPM_LOG_TAG, 'Fetching manifest');
     if (this.validatedManifest) {
       return this.validatedManifest.clone();
     }
 
-    // const vfile = await this.fetch('snap.manifest.json');
-    const content = await fetchManifest('snap.manifest.json');
-    const manifest = JSON.parse(content);
-    const canonicalPath = new URL(
-      this.meta.packageName,
-      this.registry,
-    ).toString();
-    const vfile = new VirtualFile<SnapManifest>({
-      value: content.toString(),
-      result: createSnapManifest(manifest),
-      path: 'snap.manifest.json',
-      data: {
-        canonicalPath:
-          'npm:https://registry.npmjs.org/@consensys/starknet-snap/snap.manifest.json',
-      },
-    });
+    const vfile = await this.fetch('snap.manifest.json');
+    const result = JSON.parse(vfile.toString());
+    vfile.result = createSnapManifest(result);
     this.validatedManifest = vfile as VirtualFile<SnapManifest>;
+
     return this.manifest();
   }
 
@@ -235,9 +230,7 @@ export class NpmLocation implements SnapLocation {
     const relativePath = normalizeRelative(path);
     if (!this.files) {
       console.log(SNAPS_NPM_LOG_TAG, 'setting files');
-      const sourceCodeFile = await this.#lazyInit();
-      this.files = new Map<string, VirtualFile>();
-      this.files.set(relativePath, sourceCodeFile);
+      this.#lazyInit();
       assert(this.files !== undefined);
       console.log(SNAPS_NPM_LOG_TAG, 'files set with sourceCode');
     }
@@ -247,7 +240,7 @@ export class NpmLocation implements SnapLocation {
       vfile !== undefined,
       new TypeError(`File "${path}" not found in package.`),
     );
-    console.log(SNAPS_NPM_LOG_TAG, 'init done');
+    console.log(SNAPS_NPM_LOG_TAG, 'init done', this.files);
     return vfile.clone();
   }
 
@@ -271,7 +264,7 @@ export class NpmLocation implements SnapLocation {
     return this.meta.requestedRange;
   }
 
-  async #lazyInit(): Promise<VirtualFile> {
+  async #lazyInit() {
     console.log(SNAPS_NPM_LOG_TAG, 'lazyInit');
     assert(this.files === undefined);
     const [sourceCode, actualVersion] = await fetchNpmTarball(
@@ -292,9 +285,28 @@ export class NpmLocation implements SnapLocation {
     }
     canonicalBase += this.meta.registry.host;
 
-    const vFile = convertSourceCodeToVFile(sourceCode, canonicalBase);
-    console.log(SNAPS_NPM_LOG_TAG, 'lazyInit done');
-    return vFile;
+    console.log(SNAPS_NPM_LOG_TAG, 'canonicalBase', canonicalBase);
+
+    const manifestContent = await fetchManifest('snap.manifest.json');
+    const manifest = JSON.parse(manifestContent);
+    const manifestVFile = new VirtualFile<SnapManifest>({
+      value: manifestContent.toString(),
+      result: createSnapManifest(manifest),
+      path: 'snap.manifest.json',
+      data: {
+        canonicalPath: `${canonicalBase}snap.manifest.json`,
+      },
+    });
+
+    const sourceCodeVFile = new VirtualFile({
+      value: sourceCode,
+      path: 'dist/bundle.js',
+      data: { canonicalPath: canonicalBase },
+    });
+
+    this.files = new Map<string, VirtualFile>();
+    this.files.set('snap.manifest.json', manifestVFile);
+    this.files.set('dist/bundle.js', sourceCodeVFile);
   }
 }
 

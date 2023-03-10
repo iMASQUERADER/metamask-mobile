@@ -37,7 +37,7 @@ export interface SnapLocation {
  * @returns SnapLocation based on url.
  */
 
-const SNAPS_LOCATION_LOG_TAG = 'Snaps/ location';
+const SNAPS_LOCATION_LOG_TAG = 'snaps/ location';
 
 export function detectSnapLocation(
   location: string | URL,
