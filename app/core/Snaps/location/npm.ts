@@ -235,7 +235,7 @@ export class NpmLocation implements SnapLocation {
     const relativePath = normalizeRelative(path);
     if (!this.files) {
       console.log(SNAPS_NPM_LOG_TAG, 'setting files');
-      this.#lazyInit();
+      await this.#lazyInit();
       assert(this.files !== undefined);
       console.log(SNAPS_NPM_LOG_TAG, 'files set with sourceCode');
     }
@@ -342,11 +342,16 @@ async function fetchNpmTarball(
     'fetchNpmTarball called with packageName: ',
     packageName,
     registryUrl,
+    versionRange,
   );
   const urlToFetch = new URL(packageName, registryUrl).toString();
   const packageMetadata = await (await fetchFunction(urlToFetch)).json();
 
   if (!isObject(packageMetadata)) {
+    console.log(
+      SNAPS_NPM_LOG_TAG,
+      'fetchNpmTarball packageMetadata check failed',
+    );
     throw new Error(
       `Failed to fetch package "${packageName}" metadata from npm.`,
     );
