@@ -1,5 +1,5 @@
 diff --git a/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js
-index f5d98e7..16fe9ba 100644
+index f5d98e7..8f46517 100644
 --- a/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js
 +++ b/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js
 @@ -40,6 +40,7 @@ const rpc_1 = require("./endowments/rpc");
@@ -49,9 +49,9 @@ index f5d98e7..16fe9ba 100644
   * @param snapInfo - Snap information containing version and shasum.
   */
  async function _SnapController_assertIsUnblocked(snapId, snapInfo) {
-+    console.log('snaps/ SnapsController _assertIsUnblocked called with', snapId, snapInfo);
++    console.log('snaps/ SnapsController _assertIsUnblocked called with', snapId);
      if (await this.isBlocked(snapId, snapInfo)) {
-+        console.log('snaps/ SnapsController _assertIsUnblocked failed with', snapId, snapInfo);
++        console.log('snaps/ SnapsController _assertIsUnblocked failed with', snapId);
          throw new Error(`Cannot install version "${snapInfo.version}" of snap "${snapId}": the version is blocked.`);
      }
  }, _SnapController_stopSnapsLastRequestPastMax = async function _SnapController_stopSnapsLastRequestPastMax() {
@@ -59,7 +59,7 @@ index f5d98e7..16fe9ba 100644
   */
  async function _SnapController_add(args) {
      const { id: snapId, location } = args;
-+    console.log('snaps/ SnapController _SnapController_add called with', snapId, location);
++    console.log('snaps/ SnapController _SnapController_add called with', snapId);
      (0, snaps_utils_1.validateSnapId)(snapId);
 +    console.log('snaps/ SnapController _SnapController_add validated snapId', snapId);
      __classPrivateFieldGet(this, _SnapController_instances, "m", _SnapController_setupRuntime).call(this, snapId, { sourceCode: null, state: null });
