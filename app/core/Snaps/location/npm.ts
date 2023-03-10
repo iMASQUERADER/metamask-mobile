@@ -68,10 +68,13 @@ const decompressFile = async (
   targetPath: string,
 ): Promise<string> => {
   try {
-    const unzippedPath = await unzip(
-      '/Users/owencraston/Documents/package.zip',
+    console.log(
+      SNAPS_NPM_LOG_TAG,
+      'decompressFile called with',
+      path,
       targetPath,
     );
+    const unzippedPath = await unzip(path, targetPath);
     console.log(SNAPS_NPM_LOG_TAG, 'decompressFile unzippedPath', unzippedPath);
     return unzippedPath;
   } catch (error) {
