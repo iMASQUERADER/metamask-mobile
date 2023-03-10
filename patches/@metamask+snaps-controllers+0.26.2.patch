@@ -1,5 +1,5 @@
 diff --git a/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js
-index f5d98e7..d5ba1a1 100644
+index f5d98e7..16fe9ba 100644
 --- a/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js
 +++ b/node_modules/@metamask/snaps-controllers/dist/snaps/SnapController.js
 @@ -40,6 +40,7 @@ const rpc_1 = require("./endowments/rpc");
@@ -45,7 +45,76 @@ index f5d98e7..d5ba1a1 100644
              const _a = (await this.messagingSystem.call('ApprovalController:addRequest', {
                  origin,
                  id,
-@@ -1158,7 +1160,7 @@ async function _SnapController_fetchSnap(snapId, location) {
+@@ -960,7 +962,9 @@ async function _SnapController_blockSnap(snapId, blockedSnapInfo) {
+  * @param snapInfo - Snap information containing version and shasum.
+  */
+ async function _SnapController_assertIsUnblocked(snapId, snapInfo) {
++    console.log('snaps/ SnapsController _assertIsUnblocked called with', snapId, snapInfo);
+     if (await this.isBlocked(snapId, snapInfo)) {
++        console.log('snaps/ SnapsController _assertIsUnblocked failed with', snapId, snapInfo);
+         throw new Error(`Cannot install version "${snapInfo.version}" of snap "${snapId}": the version is blocked.`);
+     }
+ }, _SnapController_stopSnapsLastRequestPastMax = async function _SnapController_stopSnapsLastRequestPastMax() {
+@@ -1015,7 +1019,9 @@ async function _SnapController_terminateSnap(snapId) {
+  */
+ async function _SnapController_add(args) {
+     const { id: snapId, location } = args;
++    console.log('snaps/ SnapController _SnapController_add called with', snapId, location);
+     (0, snaps_utils_1.validateSnapId)(snapId);
++    console.log('snaps/ SnapController _SnapController_add validated snapId', snapId);
+     __classPrivateFieldGet(this, _SnapController_instances, "m", _SnapController_setupRuntime).call(this, snapId, { sourceCode: null, state: null });
+     const runtime = __classPrivateFieldGet(this, _SnapController_instances, "m", _SnapController_getRuntimeExpect).call(this, snapId);
+     if (!runtime.installPromise) {
+@@ -1024,10 +1030,12 @@ async function _SnapController_add(args) {
+         // to null in the authorize() method.
+         runtime.installPromise = (async () => {
+             const fetchedSnap = await __classPrivateFieldGet(this, _SnapController_instances, "m", _SnapController_fetchSnap).call(this, snapId, location);
++            console.log('snaps/ SnapController _SnapController_add fetched snaps');
+             await __classPrivateFieldGet(this, _SnapController_instances, "m", _SnapController_assertIsUnblocked).call(this, snapId, {
+                 version: fetchedSnap.manifest.result.version,
+                 shasum: fetchedSnap.manifest.result.source.shasum,
+             });
++            console.log('snaps/ SnapController _SnapController_assertIsUnblocked', snapId, fetchedSnap);
+             return __classPrivateFieldGet(this, _SnapController_instances, "m", _SnapController_set).call(this, Object.assign(Object.assign(Object.assign({}, args), fetchedSnap), { id: snapId }));
+         })();
+     }
+@@ -1037,6 +1045,7 @@ async function _SnapController_add(args) {
+     catch (error) {
+         // Reset promise so users can retry installation in case the problem is
+         // temporary.
++        console.log('snaps/ SnapController _SnapController_add error', error);
+         runtime.installPromise = null;
+         throw error;
+     }
+@@ -1094,20 +1103,27 @@ async function _SnapController_getEndowments(snapId) {
+     return dedupedEndowments;
+ }, _SnapController_set = function _SnapController_set(args) {
+     var _a, _b;
++    console.log('snaps/ SnapsController _SnapController_set called with files', files);
+     const { id: snapId, origin, manifest, files, versionRange = snaps_utils_1.DEFAULT_REQUESTED_SNAP_VERSION, isUpdate = false, } = args;
+     (0, snaps_utils_1.assertIsSnapManifest)(manifest.result);
++    console.log('snaps/ SnapsController _SnapController_set assertIsSnapManifest', manifest.result);
+     const { version } = manifest.result;
+     if (!(0, snaps_utils_1.satisfiesVersionRange)(version, versionRange)) {
+         throw new Error(`Version mismatch. Manifest for "${snapId}" specifies version "${version}" which doesn't satisfy requested version range "${versionRange}"`);
+     }
++    console.log('snaps/ SnapsController _SnapController_set fetching source code', manifest.result.source.location.npm.filePath);
+     const sourceCode = (_a = files
+         .find((file) => file.path === manifest.result.source.location.npm.filePath)) === null || _a === void 0 ? void 0 : _a.toString();
++    console.log('snaps/ SnapsController _SnapController_set got sourceCode as', sourceCode);
+     const svgIcon = files.find((file) => manifest.result.source.location.npm.iconPath !== undefined &&
+         file.path === manifest.result.source.location.npm.iconPath);
++    console.log('snaps/ SnapsController _SnapController_set got svgIcon', svgIcon);
+     (0, utils_1.assert)(sourceCode !== undefined);
++    console.log('snaps/ SnapsController _SnapController_set source code is not undefined');
+     if (typeof sourceCode !== 'string' || sourceCode.length === 0) {
+         throw new Error(`Invalid source code for snap "${snapId}".`);
+     }
++    console.log('snaps/ SnapsController _SnapController_set got source code');
+     const snapsState = this.state.snaps;
+     const existingSnap = snapsState[snapId];
+     const previousVersionHistory = (_b = existingSnap === null || existingSnap === void 0 ? void 0 : existingSnap.versionHistory) !== null && _b !== void 0 ? _b : [];
+@@ -1158,7 +1174,7 @@ async function _SnapController_fetchSnap(snapId, location) {
      try {
          const manifest = await location.manifest();
          const sourceCode = await location.fetch(manifest.result.source.location.npm.filePath);

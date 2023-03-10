@@ -96,11 +96,6 @@ const convertFetchBlobResponseToResponse = async (
   const headers = new Headers(fetchBlobResponse.respInfo.headers);
   const status = fetchBlobResponse.respInfo.status;
   const dataPath = fetchBlobResponse.data;
-  console.log(
-    SNAPS_NPM_LOG_TAG,
-    'convertFetchBlobResponseToResponse input',
-    fetchBlobResponse,
-  );
   const data = await readAndParseSourceCode(dataPath);
   const response = new Response(data, { headers, status });
   return response;
@@ -119,7 +114,6 @@ const fetchNPMFunction = async (
     path: filePath,
   }).fetch('GET', urlToFetch);
   const rsp = await convertFetchBlobResponseToResponse(response);
-  console.log(SNAPS_NPM_LOG_TAG, 'fetchFunction response', rsp);
   return rsp;
 };
 
@@ -227,10 +221,12 @@ export class NpmLocation implements SnapLocation {
       value: content.toString(),
       result: createSnapManifest(manifest),
       path: 'snap.manifest.json',
-      data: { canonicalPath },
+      data: {
+        canonicalPath:
+          'npm:https://registry.npmjs.org/@consensys/starknet-snap/snap.manifest.json',
+      },
     });
     this.validatedManifest = vfile as VirtualFile<SnapManifest>;
-    console.log(SNAPS_NPM_LOG_TAG, 'Manifest good', this.validatedManifest);
     return this.manifest();
   }
 
@@ -297,6 +293,7 @@ export class NpmLocation implements SnapLocation {
     canonicalBase += this.meta.registry.host;
 
     const vFile = convertSourceCodeToVFile(sourceCode, canonicalBase);
+    console.log(SNAPS_NPM_LOG_TAG, 'lazyInit done');
     return vFile;
   }
 }
@@ -340,8 +337,6 @@ async function fetchNpmTarball(
       return version;
     },
   );
-
-  console.log(SNAPS_NPM_LOG_TAG, 'fetchNpmTarball versions:', versions);
 
   const targetVersion = getTargetVersion(versions, versionRange);
   console.log(
