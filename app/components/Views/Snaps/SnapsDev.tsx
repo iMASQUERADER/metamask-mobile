@@ -27,9 +27,7 @@ const SnapsDev = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
 
-  const [snapInput, setSnapInput] = useState<string>(
-    'npm:@consensys/starknet-snap',
-  );
+  const [snapInput, setSnapInput] = useState<string>('npm:@chainsafe/filsnap');
   const snaps = useSelector(
     (state: any) => state.engine.backgroundState.SnapController.snaps,
   );

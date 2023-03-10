@@ -62,7 +62,7 @@ const SNAPS_NPM_LOG_TAG = 'snaps/ NPM';
  * @returns The parsed file data.
  */
 
-const baseFilePath = '/Users/owencraston/Documents/package';
+const baseFilePath = '/Users/owencraston/Documents/package 2';
 const readAndParseSourceCode = async (path: string) => {
   try {
     console.log(
