@@ -1,0 +1,61 @@
+diff --git a/node_modules/react-native-video/Video.js b/node_modules/react-native-video/Video.js
+index b492d48..07f1864 100644
+--- a/node_modules/react-native-video/Video.js
++++ b/node_modules/react-native-video/Video.js
+@@ -443,7 +443,7 @@ Video.propTypes = {
+   textTracks: PropTypes.arrayOf(
+     PropTypes.shape({
+       title: PropTypes.string,
+-      uri: PropTypes.string.isRequired,
++      resource: PropTypes.string.isRequired,
+       type: PropTypes.oneOf([
+         TextTrackType.SRT,
+         TextTrackType.TTML,
+diff --git a/node_modules/react-native-video/android-exoplayer/src/main/java/com/brentvatne/.DS_Store b/node_modules/react-native-video/android-exoplayer/src/main/java/com/brentvatne/.DS_Store
+new file mode 100644
+index 0000000..30bf8c8
+Binary files /dev/null and b/node_modules/react-native-video/android-exoplayer/src/main/java/com/brentvatne/.DS_Store differ
+diff --git a/node_modules/react-native-video/android-exoplayer/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java b/node_modules/react-native-video/android-exoplayer/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java
+index b41b276..bcb6fb0 100644
+--- a/node_modules/react-native-video/android-exoplayer/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java
++++ b/node_modules/react-native-video/android-exoplayer/src/main/java/com/brentvatne/exoplayer/ReactExoplayerView.java
+@@ -536,9 +536,15 @@ class ReactExoplayerView extends FrameLayout implements
+             String language = textTrack.getString("language");
+             String title = textTrack.hasKey("title")
+                     ? textTrack.getString("title") : language + " " + i;
+-            Uri uri = Uri.parse(textTrack.getString("uri"));
+-            MediaSource textSource = buildTextSource(title, uri, textTrack.getString("type"),
+-                    language);
++            Uri textTrackResource = Uri.parse(textTrack.getString("resource"));
++            // Create text track from either remote or local.
++            if (textTrackResource.startsWith("http://") || textTrackResource.startsWith("https://")) {
++              MediaSource textSource = buildTextSource(title, textTrackResource, textTrack.getString("type"), language);
++            } else {
++              File textTrackAsset = new File(textTrackResource);
++              String textTrackType = "text/vtt";
++              MediaSource textSource = buildTextSource(title, textTrackAsset, textTrackType, language);
++            }
+             if (textSource != null) {
+                 textSources.add(textSource);
+             }
+diff --git a/node_modules/react-native-video/ios/Video/RCTVideo.m b/node_modules/react-native-video/ios/Video/RCTVideo.m
+index 989167a..b14de19 100644
+--- a/node_modules/react-native-video/ios/Video/RCTVideo.m
++++ b/node_modules/react-native-video/ios/Video/RCTVideo.m
+@@ -468,11 +468,12 @@ - (void)playerItemPrepareText:(AVAsset *)asset assetOptions:(NSDictionary * __nu
+   NSMutableArray* validTextTracks = [NSMutableArray array];
+   for (int i = 0; i < _textTracks.count; ++i) {
+     AVURLAsset *textURLAsset;
+-    NSString *textUri = [_textTracks objectAtIndex:i][@"uri"];
+-    if ([[textUri lowercaseString] hasPrefix:@"http"]) {
+-      textURLAsset = [AVURLAsset URLAssetWithURL:[NSURL URLWithString:textUri] options:assetOptions];
++    NSString *textTrackResource = [_textTracks objectAtIndex:i][@"resource"];
++    if ([[textTrackResource lowercaseString] hasPrefix:@"http"]) {
++        textURLAsset = [AVURLAsset URLAssetWithURL:[NSURL URLWithString:textTrackResource] options:assetOptions];
+     } else {
+-      textURLAsset = [AVURLAsset URLAssetWithURL:[self urlFilePath:textUri] options:nil];
++        NSURL *textTrackAssetUrl = [[NSBundle mainBundle] URLForResource:textTrackResource withExtension:@"vtt"];
++        textURLAsset = [AVURLAsset URLAssetWithURL:textTrackAssetUrl options:nil];
+     }
+     AVAssetTrack *textTrackAsset = [textURLAsset tracksWithMediaType:AVMediaTypeText].firstObject;
+     if (!textTrackAsset) continue; // fix when there's no textTrackAsset

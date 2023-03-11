@@ -43,6 +43,36 @@
 		813214A2220E40C7BBB5ED9E /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A783D1CD7D27456796FE2E1B /* Roboto-Bold.ttf */; };
 		887E75FB64A54509A08D6C50 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E020F42F788744B3BCE17F05 /* Roboto-LightItalic.ttf */; };
 		8DEB44A7E7EF48E1B3298910 /* EuclidCircularB-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = CE0434C5FB7C4C6F9FEBDCE2 /* EuclidCircularB-Medium.otf */; };
+		B0DB0E5C29BC22790093C1E9 /* subtitles-tl.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E4629BC22770093C1E9 /* subtitles-tl.vtt */; };
+		B0DB0E5D29BC22790093C1E9 /* subtitles-tl.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E4629BC22770093C1E9 /* subtitles-tl.vtt */; };
+		B0DB0E5E29BC22790093C1E9 /* subtitles-fr.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E4E29BC22770093C1E9 /* subtitles-fr.vtt */; };
+		B0DB0E5F29BC22790093C1E9 /* subtitles-fr.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E4E29BC22770093C1E9 /* subtitles-fr.vtt */; };
+		B0DB0E6029BC22790093C1E9 /* subtitles-el.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E4F29BC22770093C1E9 /* subtitles-el.vtt */; };
+		B0DB0E6129BC22790093C1E9 /* subtitles-el.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E4F29BC22770093C1E9 /* subtitles-el.vtt */; };
+		B0DB0E6229BC22790093C1E9 /* subtitles-tr.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5029BC22770093C1E9 /* subtitles-tr.vtt */; };
+		B0DB0E6329BC22790093C1E9 /* subtitles-tr.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5029BC22770093C1E9 /* subtitles-tr.vtt */; };
+		B0DB0E6429BC22790093C1E9 /* subtitles-es.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5129BC22770093C1E9 /* subtitles-es.vtt */; };
+		B0DB0E6529BC22790093C1E9 /* subtitles-es.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5129BC22770093C1E9 /* subtitles-es.vtt */; };
+		B0DB0E6629BC22790093C1E9 /* subtitles-zh.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5229BC22770093C1E9 /* subtitles-zh.vtt */; };
+		B0DB0E6729BC22790093C1E9 /* subtitles-zh.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5229BC22770093C1E9 /* subtitles-zh.vtt */; };
+		B0DB0E6829BC22790093C1E9 /* subtitles-ru.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5329BC22780093C1E9 /* subtitles-ru.vtt */; };
+		B0DB0E6929BC22790093C1E9 /* subtitles-ru.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5329BC22780093C1E9 /* subtitles-ru.vtt */; };
+		B0DB0E6A29BC22790093C1E9 /* subtitles-de.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5429BC22780093C1E9 /* subtitles-de.vtt */; };
+		B0DB0E6B29BC22790093C1E9 /* subtitles-de.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5429BC22780093C1E9 /* subtitles-de.vtt */; };
+		B0DB0E6C29BC22790093C1E9 /* subtitles-hi.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5529BC22780093C1E9 /* subtitles-hi.vtt */; };
+		B0DB0E6D29BC22790093C1E9 /* subtitles-hi.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5529BC22780093C1E9 /* subtitles-hi.vtt */; };
+		B0DB0E6E29BC22790093C1E9 /* subtitles-vi.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5629BC22780093C1E9 /* subtitles-vi.vtt */; };
+		B0DB0E6F29BC22790093C1E9 /* subtitles-vi.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5629BC22780093C1E9 /* subtitles-vi.vtt */; };
+		B0DB0E7029BC22790093C1E9 /* subtitles-pt.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5729BC22780093C1E9 /* subtitles-pt.vtt */; };
+		B0DB0E7129BC22790093C1E9 /* subtitles-pt.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5729BC22780093C1E9 /* subtitles-pt.vtt */; };
+		B0DB0E7229BC22790093C1E9 /* subtitles-id.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5829BC22780093C1E9 /* subtitles-id.vtt */; };
+		B0DB0E7329BC22790093C1E9 /* subtitles-id.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5829BC22780093C1E9 /* subtitles-id.vtt */; };
+		B0DB0E7429BC22790093C1E9 /* subtitles-ko.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5929BC22780093C1E9 /* subtitles-ko.vtt */; };
+		B0DB0E7529BC22790093C1E9 /* subtitles-ko.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5929BC22780093C1E9 /* subtitles-ko.vtt */; };
+		B0DB0E7629BC22790093C1E9 /* subtitles-ja.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5A29BC22790093C1E9 /* subtitles-ja.vtt */; };
+		B0DB0E7729BC22790093C1E9 /* subtitles-ja.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5A29BC22790093C1E9 /* subtitles-ja.vtt */; };
+		B0DB0E7829BC22790093C1E9 /* subtitles-en.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5B29BC22790093C1E9 /* subtitles-en.vtt */; };
+		B0DB0E7929BC22790093C1E9 /* subtitles-en.vtt in Resources */ = {isa = PBXBuildFile; fileRef = B0DB0E5B29BC22790093C1E9 /* subtitles-en.vtt */; };
 		B0EF7FA927BD16EA00D48B4E /* ThemeColors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0EF7FA827BD16EA00D48B4E /* ThemeColors.xcassets */; };
 		B339FF02289ABD70001B89FB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		B339FF03289ABD70001B89FB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654378AF243E2ADC00571B9C /* File.swift */; };
@@ -305,6 +335,21 @@
 		A98029A3662F4C1391489A6B /* EuclidCircularB-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EuclidCircularB-Light.otf"; path = "../app/fonts/EuclidCircularB-Light.otf"; sourceTree = "<group>"; };
 		A98DB430A7DA47EFB97EDF8B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		AA9EDF17249955C7005D89EE /* MetaMaskDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MetaMaskDebug.entitlements; path = MetaMask/MetaMaskDebug.entitlements; sourceTree = "<group>"; };
+		B0DB0E4629BC22770093C1E9 /* subtitles-tl.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-tl.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-tl.vtt"; sourceTree = "<group>"; };
+		B0DB0E4E29BC22770093C1E9 /* subtitles-fr.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-fr.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-fr.vtt"; sourceTree = "<group>"; };
+		B0DB0E4F29BC22770093C1E9 /* subtitles-el.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-el.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-el.vtt"; sourceTree = "<group>"; };
+		B0DB0E5029BC22770093C1E9 /* subtitles-tr.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-tr.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-tr.vtt"; sourceTree = "<group>"; };
+		B0DB0E5129BC22770093C1E9 /* subtitles-es.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-es.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-es.vtt"; sourceTree = "<group>"; };
+		B0DB0E5229BC22770093C1E9 /* subtitles-zh.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-zh.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-zh.vtt"; sourceTree = "<group>"; };
+		B0DB0E5329BC22780093C1E9 /* subtitles-ru.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-ru.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-ru.vtt"; sourceTree = "<group>"; };
+		B0DB0E5429BC22780093C1E9 /* subtitles-de.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-de.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-de.vtt"; sourceTree = "<group>"; };
+		B0DB0E5529BC22780093C1E9 /* subtitles-hi.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-hi.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-hi.vtt"; sourceTree = "<group>"; };
+		B0DB0E5629BC22780093C1E9 /* subtitles-vi.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-vi.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-vi.vtt"; sourceTree = "<group>"; };
+		B0DB0E5729BC22780093C1E9 /* subtitles-pt.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-pt.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-pt.vtt"; sourceTree = "<group>"; };
+		B0DB0E5829BC22780093C1E9 /* subtitles-id.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-id.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-id.vtt"; sourceTree = "<group>"; };
+		B0DB0E5929BC22780093C1E9 /* subtitles-ko.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-ko.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-ko.vtt"; sourceTree = "<group>"; };
+		B0DB0E5A29BC22790093C1E9 /* subtitles-ja.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-ja.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-ja.vtt"; sourceTree = "<group>"; };
+		B0DB0E5B29BC22790093C1E9 /* subtitles-en.vtt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "subtitles-en.vtt"; path = "../android/app/src/main/assets/srp-subtitles/subtitles-en.vtt"; sourceTree = "<group>"; };
 		B0EF7FA827BD16EA00D48B4E /* ThemeColors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ThemeColors.xcassets; sourceTree = "<group>"; };
 		B339FEA72899852C001B89FB /* MetaMask-QA-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "MetaMask-QA-Info.plist"; path = "MetaMask/MetaMask-QA-Info.plist"; sourceTree = "<group>"; };
 		B339FF39289ABD70001B89FB /* MetaMask-QA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MetaMask-QA.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -482,6 +527,21 @@
 		4A27949D046C4516B9653BBB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B0DB0E5429BC22780093C1E9 /* subtitles-de.vtt */,
+				B0DB0E4F29BC22770093C1E9 /* subtitles-el.vtt */,
+				B0DB0E5B29BC22790093C1E9 /* subtitles-en.vtt */,
+				B0DB0E5129BC22770093C1E9 /* subtitles-es.vtt */,
+				B0DB0E4E29BC22770093C1E9 /* subtitles-fr.vtt */,
+				B0DB0E5529BC22780093C1E9 /* subtitles-hi.vtt */,
+				B0DB0E5829BC22780093C1E9 /* subtitles-id.vtt */,
+				B0DB0E5A29BC22790093C1E9 /* subtitles-ja.vtt */,
+				B0DB0E5929BC22780093C1E9 /* subtitles-ko.vtt */,
+				B0DB0E5729BC22780093C1E9 /* subtitles-pt.vtt */,
+				B0DB0E5329BC22780093C1E9 /* subtitles-ru.vtt */,
+				B0DB0E4629BC22770093C1E9 /* subtitles-tl.vtt */,
+				B0DB0E5029BC22770093C1E9 /* subtitles-tr.vtt */,
+				B0DB0E5629BC22780093C1E9 /* subtitles-vi.vtt */,
+				B0DB0E5229BC22770093C1E9 /* subtitles-zh.vtt */,
 				159878012231DF67001748EC /* AntDesign.ttf */,
 				15D158EC210BD8C8006982B5 /* Metamask.ttf */,
 				A498EA4CD2F8488DB666B94C /* Entypo.ttf */,
@@ -791,32 +851,47 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				158B063B211A72F500DF3C74 /* InpageBridgeWeb3.js in Resources */,
+				B0DB0E5E29BC22790093C1E9 /* subtitles-fr.vtt in Resources */,
 				15D158ED210BD912006982B5 /* Metamask.ttf in Resources */,
 				48AD4B0AABCB447B99B85DC4 /* Roboto-Black.ttf in Resources */,
 				B0EF7FA927BD16EA00D48B4E /* ThemeColors.xcassets in Resources */,
 				CD13D926E1E84D9ABFE672C0 /* Roboto-BlackItalic.ttf in Resources */,
 				813214A2220E40C7BBB5ED9E /* Roboto-Bold.ttf in Resources */,
+				B0DB0E7229BC22790093C1E9 /* subtitles-id.vtt in Resources */,
+				B0DB0E6229BC22790093C1E9 /* subtitles-tr.vtt in Resources */,
 				15AD28AA21B7CFDC005DEB23 /* debug.xcconfig in Resources */,
+				B0DB0E5C29BC22790093C1E9 /* subtitles-tl.vtt in Resources */,
 				298242C958524BB38FB44CAE /* Roboto-BoldItalic.ttf in Resources */,
 				2DB27BE39B164356A98A0FB1 /* Roboto-Italic.ttf in Resources */,
 				4CEFC9E34A8D4288BFE2F85A /* Roboto-Light.ttf in Resources */,
 				887E75FB64A54509A08D6C50 /* Roboto-LightItalic.ttf in Resources */,
 				15AD28A921B7CFD9005DEB23 /* release.xcconfig in Resources */,
+				B0DB0E6029BC22790093C1E9 /* subtitles-el.vtt in Resources */,
 				EF65C42EA15B4774B1947A12 /* Roboto-Medium.ttf in Resources */,
 				DC6A024F56DD43E1A83B47B1 /* Roboto-MediumItalic.ttf in Resources */,
 				34CEE49BC79D411687B42FA9 /* Roboto-Regular.ttf in Resources */,
+				B0DB0E6429BC22790093C1E9 /* subtitles-es.vtt in Resources */,
 				7E08FB90F3754D47994208B4 /* Roboto-Thin.ttf in Resources */,
 				7C0226ABD9694AEDBAF3016F /* Roboto-ThinItalic.ttf in Resources */,
 				15ACC9FB226555820063978B /* LaunchScreen.xib in Resources */,
 				49D8E62C506F4A63889EEC7F /* branch.json in Resources */,
 				2A27FC9EEF1F4FD18E658544 /* config.json in Resources */,
 				FF0F3B13A5354C41913F766D /* EuclidCircularB-Bold.otf in Resources */,
+				B0DB0E6829BC22790093C1E9 /* subtitles-ru.vtt in Resources */,
+				B0DB0E6629BC22790093C1E9 /* subtitles-zh.vtt in Resources */,
+				B0DB0E7429BC22790093C1E9 /* subtitles-ko.vtt in Resources */,
 				E34DE917F6FC4438A6E88402 /* EuclidCircularB-BoldItalic.otf in Resources */,
+				B0DB0E6E29BC22790093C1E9 /* subtitles-vi.vtt in Resources */,
 				07CBADD9D4B441008304F8D3 /* EuclidCircularB-Light.otf in Resources */,
+				B0DB0E7029BC22790093C1E9 /* subtitles-pt.vtt in Resources */,
 				2CDF19FE9DEE4BF8B07154B1 /* EuclidCircularB-LightItalic.otf in Resources */,
 				8DEB44A7E7EF48E1B3298910 /* EuclidCircularB-Medium.otf in Resources */,
+				B0DB0E6C29BC22790093C1E9 /* subtitles-hi.vtt in Resources */,
+				B0DB0E7629BC22790093C1E9 /* subtitles-ja.vtt in Resources */,
+				B0DB0E7829BC22790093C1E9 /* subtitles-en.vtt in Resources */,
 				D171C39A8BD44DBEB6B68480 /* EuclidCircularB-MediumItalic.otf in Resources */,
 				39D0D096A0F340ABAC1A8565 /* EuclidCircularB-Regular.otf in Resources */,
+				B0DB0E6A29BC22790093C1E9 /* subtitles-de.vtt in Resources */,
 				2370F9A340CF4ADFBCFB0543 /* EuclidCircularB-RegularItalic.otf in Resources */,
 				BF39E5BAE0F34F9091FF6AC0 /* EuclidCircularB-Semibold.otf in Resources */,
 				373454C575C84C24B0BB24D4 /* EuclidCircularB-SemiboldItalic.otf in Resources */,
@@ -827,14 +902,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0DB0E5F29BC22790093C1E9 /* subtitles-fr.vtt in Resources */,
 				B339FF10289ABD70001B89FB /* Images.xcassets in Resources */,
+				B0DB0E6329BC22790093C1E9 /* subtitles-tr.vtt in Resources */,
 				B339FF11289ABD70001B89FB /* InpageBridgeWeb3.js in Resources */,
 				B339FF12289ABD70001B89FB /* Metamask.ttf in Resources */,
 				B339FF13289ABD70001B89FB /* Roboto-Black.ttf in Resources */,
 				B339FF14289ABD70001B89FB /* ThemeColors.xcassets in Resources */,
+				B0DB0E7729BC22790093C1E9 /* subtitles-ja.vtt in Resources */,
 				B339FF15289ABD70001B89FB /* Roboto-BlackItalic.ttf in Resources */,
+				B0DB0E6729BC22790093C1E9 /* subtitles-zh.vtt in Resources */,
 				B339FF16289ABD70001B89FB /* Roboto-Bold.ttf in Resources */,
 				B339FF17289ABD70001B89FB /* debug.xcconfig in Resources */,
+				B0DB0E5D29BC22790093C1E9 /* subtitles-tl.vtt in Resources */,
 				B339FF18289ABD70001B89FB /* Roboto-BoldItalic.ttf in Resources */,
 				B339FF19289ABD70001B89FB /* Roboto-Italic.ttf in Resources */,
 				B339FF1A289ABD70001B89FB /* Roboto-Light.ttf in Resources */,
@@ -843,19 +923,29 @@
 				B339FF1D289ABD70001B89FB /* Roboto-Medium.ttf in Resources */,
 				B339FF1E289ABD70001B89FB /* Roboto-MediumItalic.ttf in Resources */,
 				B339FF1F289ABD70001B89FB /* Roboto-Regular.ttf in Resources */,
+				B0DB0E6129BC22790093C1E9 /* subtitles-el.vtt in Resources */,
+				B0DB0E7129BC22790093C1E9 /* subtitles-pt.vtt in Resources */,
 				B339FF20289ABD70001B89FB /* Roboto-Thin.ttf in Resources */,
 				B339FF21289ABD70001B89FB /* Roboto-ThinItalic.ttf in Resources */,
+				B0DB0E6F29BC22790093C1E9 /* subtitles-vi.vtt in Resources */,
 				B339FF22289ABD70001B89FB /* LaunchScreen.xib in Resources */,
 				B339FF23289ABD70001B89FB /* branch.json in Resources */,
+				B0DB0E6529BC22790093C1E9 /* subtitles-es.vtt in Resources */,
 				B339FF24289ABD70001B89FB /* config.json in Resources */,
 				B339FF25289ABD70001B89FB /* EuclidCircularB-Bold.otf in Resources */,
 				B339FF26289ABD70001B89FB /* EuclidCircularB-BoldItalic.otf in Resources */,
 				B339FF27289ABD70001B89FB /* EuclidCircularB-Light.otf in Resources */,
 				B339FF28289ABD70001B89FB /* EuclidCircularB-LightItalic.otf in Resources */,
+				B0DB0E7329BC22790093C1E9 /* subtitles-id.vtt in Resources */,
 				B339FF29289ABD70001B89FB /* EuclidCircularB-Medium.otf in Resources */,
 				B339FF2A289ABD70001B89FB /* EuclidCircularB-MediumItalic.otf in Resources */,
+				B0DB0E6D29BC22790093C1E9 /* subtitles-hi.vtt in Resources */,
+				B0DB0E6B29BC22790093C1E9 /* subtitles-de.vtt in Resources */,
+				B0DB0E7929BC22790093C1E9 /* subtitles-en.vtt in Resources */,
+				B0DB0E7529BC22790093C1E9 /* subtitles-ko.vtt in Resources */,
 				B339FF3C289ABF2C001B89FB /* MetaMask-QA-Info.plist in Resources */,
 				B339FF2B289ABD70001B89FB /* EuclidCircularB-Regular.otf in Resources */,
+				B0DB0E6929BC22790093C1E9 /* subtitles-ru.vtt in Resources */,
 				B339FF2C289ABD70001B89FB /* EuclidCircularB-RegularItalic.otf in Resources */,
 				B339FF2D289ABD70001B89FB /* EuclidCircularB-Semibold.otf in Resources */,
 				B339FF2E289ABD70001B89FB /* EuclidCircularB-SemiboldItalic.otf in Resources */,
