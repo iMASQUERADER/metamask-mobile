@@ -15,6 +15,8 @@ import { assert, assertStruct, isObject } from '@metamask/utils';
 
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 import { zip, unzip, unzipAssets, subscribe } from 'react-native-zip-archive';
+import { NativeModules } from 'react-native';
+const { RNTar } = NativeModules;
 
 const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
@@ -139,6 +141,8 @@ const convertFetchBlobResponseToResponse = async (
 const fetchNPMFunction = async (
   inputRequest: RequestInfo,
 ): Promise<Response> => {
+  const val = await RNTar.unTar('test/path');
+  console.log(SNAPS_NPM_LOG_TAG, 'native module call', val);
   console.log(SNAPS_NPM_LOG_TAG, 'custom fetchNPMFunction', inputRequest);
   const { config } = ReactNativeBlobUtil;
   const filePath = `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/archive.zip`;
