@@ -700,12 +700,10 @@ class Amount extends PureComponent {
     }
 
     if (selectedAsset.erc20) {
-      transactionObject.gas = undefined;
       transactionObject.readableValue = value;
     }
 
     if (selectedAsset.isETH) {
-      transactionObject.gas = undefined;
       transactionObject.to = transactionTo;
     }
 
